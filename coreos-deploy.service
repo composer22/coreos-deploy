@@ -1,0 +1,29 @@
+[Unit]
+Description=coreos-deploy
+After=docker.service
+Requires=docker.service
+
+[Service]
+Restart=on-abnormal
+TimeoutStartSec=0
+KillMode=none
+EnvironmentFile=/etc/environment
+ExecStartPre=-/usr/bin/docker kill coreos_deploy
+ExecStartPre=-/usr/bin/docker rm coreos_deploy
+ExecStartPre=-/usr/bin/docker rmi composer22/coreos-deploy
+ExecStartPre=/usr/bin/docker pull composer22/coreos-deploy
+ExecStart=/usr/bin/bash -c \
+"/usr/bin/docker run -v /var/run/fleet.sock:/var/run/fleet.sock --name=coreos_deploy \
+ -p ${COREOS_PRIVATE_IPV4}:8081:8080 -h `hostname` \
+  composer22/coreos-deploy -p 8080 -H 0.0.0.0 -X 2 -T ${COREOS_PRIVATE_IPV4}:2379 \
+ -N `etcdctl get /example.com/services/coreos-deploy/props/server-name` \
+ -O `etcdctl get /example.com/services/coreos-deploy/props/domain` \
+ -E `etcdctl get /example.com/services/coreos-deploy/props/environment` \
+ --dsn `etcdctl get /example.com/services/coreos-deploy/props/dsn`"
+ExecStop=-/usr/bin/docker stop coreos_deploy
+ExecStopPost=-/usr/bin/docker rm coreos_deploy
+ExecStopPost=-/usr/bin/docker rmi composer22/coreos-deploy
+
+[X-Fleet]
+Global=true
+MachineMetadata=role=control

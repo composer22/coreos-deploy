@@ -1,0 +1,18 @@
+FROM gliderlabs/alpine
+MAINTAINER Bryan-Kirk Reinhardt
+ENV FLEET_VERSION 0.11.5
+RUN \
+  apk --update add bash curl ca-certificates && \
+  mkdir -p /tmp/coreos-deploy/ && \
+  mkdir -p /usr/local/bin/coreos-deploy/ && \
+  wget -P /tmp https://github.com/coreos/fleet/releases/download/v${FLEET_VERSION}/fleet-v${FLEET_VERSION}-linux-amd64.tar.gz && \
+  gunzip /tmp/fleet-v${FLEET_VERSION}-linux-amd64.tar.gz && \
+  tar -xf /tmp/fleet-v${FLEET_VERSION}-linux-amd64.tar -C /tmp && \
+  mv /tmp/fleet-v${FLEET_VERSION}-linux-amd64/fleetctl /usr/local/bin/coreos-deploy/ && \
+  rm -rf /tmp/fleet-v${FLEET_VERSION}-linux-amd64*
+ADD coreos-deploy /usr/local/bin/coreos-deploy/coreos-deploy
+CMD []
+ENTRYPOINT ["/usr/local/bin/coreos-deploy/coreos-deploy", "-N", "NoName", "-H", "0.0.0.0", "-O", "example.com", \
+           "-E", "development", "-p", "8080", "-X", "2", "-T", "0.0.0.0:2379", \
+		   "--dsn", "coreos_deploy:letmein@tcp(your-mysql-path.rds.amazonaws.com:3306)/coreos_deploy_dev"]
+EXPOSE 8080 6060
