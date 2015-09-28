@@ -181,9 +181,9 @@ coreos-deploy.service is included as a reference.
 
 An additional Restful API is available to provide a display of machines and their unit status in
 the cluster.
-
-* http://localhost:8080/v1.0/cluster_map?mq=<machinequerystring>&uq=<unitquerystring>
-
+```
+http://localhost:8080/v1.0/cluster_map?mq=<machinequerystring>&uq=<unitquerystring>
+```
 This call requires a Bearer token.
 
 This returns a json structure of machines and units similar to this:
@@ -294,8 +294,8 @@ This returns a json structure of machines and units similar to this:
   }]
 }
 ```
-Machines are sorted by: metadata asc, ip asc.
-Units within a machine are sorted by: sub asc, unit asc
+* Machines are sorted by: metadata asc, ip asc.
+* Units within a machine are sorted by: sub asc, unit asc
 
 Two optional regular expression query string filers are allowed as parameters:
 
