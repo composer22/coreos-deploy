@@ -3,7 +3,7 @@ package server
 import "time"
 
 const (
-	version              = "0.0.1"        // Application and server version.
+	version              = "0.0.2"        // Application and server version.
 	DefaultHostName      = "localhost"    // The hostname of the server.
 	DefaultEnvironment   = "development"  // The default environment for the server.
 	DefaultPort          = 8080           // Port to receive requests: see IANA Port Numbers.
