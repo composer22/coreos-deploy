@@ -16,11 +16,12 @@ const (
 	// * zeros = no change or no limitations or not enabled.
 
 	// http: routes.
-	httpRouteV1Health  = "/v1.0/health"
-	httpRouteV1Info    = "/v1.0/info"
-	httpRouteV1Metrics = "/v1.0/metrics"
-	httpRouteV1Deploy  = "/v1.0/deploy"
-	httpRouteV1Status  = "/v1.0/status/"
+	httpRouteV1Health     = "/v1.0/health"
+	httpRouteV1Info       = "/v1.0/info"
+	httpRouteV1Metrics    = "/v1.0/metrics"
+	httpRouteV1Deploy     = "/v1.0/deploy"
+	httpRouteV1Status     = "/v1.0/status/"
+	httpRouteV1ClusterMap = "/v1.0/cluster_map/"
 
 	// Connections.
 	TCPReadTimeout  = 10 * time.Second
@@ -49,4 +50,5 @@ const (
 	InvalidJSONText      = "Invalid JSON format in text of body in request."
 	InvalidJSONAttribute = "Invalid - 'text' attribute in JSON not found."
 	InvalidAuthorization = "Invalid authorization."
+	InvalidQueryString   = "Invalid query string."
 )

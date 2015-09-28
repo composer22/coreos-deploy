@@ -59,6 +59,7 @@ func New(ops *Options, l *logger.Logger) *Server {
 	mux.HandleFunc(httpRouteV1Metrics, s.metricsHandler)
 	mux.HandleFunc(httpRouteV1Deploy, s.deployHandler)
 	mux.HandleFunc(httpRouteV1Status, s.statusHandler)
+	mux.HandleFunc(httpRouteV1ClusterMap, s.clusterMapHandler)
 	s.srvr = &http.Server{
 		Addr:         fmt.Sprintf("%s:%d", s.opts.HostName, s.opts.Port),
 		Handler:      &Middleware{serv: s, handler: mux},
@@ -266,6 +267,21 @@ func (s *Server) statusHandler(w http.ResponseWriter, r *http.Request) {
 	// Format the response data.
 	if err != nil {
 		w.Write([]byte(fmt.Sprintf(`{"id":%s,"error":"%s"}`, deployID, err)))
+		return
+	}
+	b, _ := json.Marshal(result)
+	w.Write(b)
+}
+
+// clusterMapHandler handles a client request for a machine map of the cluster.
+func (s *Server) clusterMapHandler(w http.ResponseWriter, r *http.Request) {
+	if s.invalidHeader(w, r) || s.invalidMethod(w, r, httpGet) || s.invalidAuth(w, r) {
+		return
+	}
+
+	result, err := GetClusterInfo(r.URL.Query().Get("mq"), r.URL.Query().Get("uq"))
+	if err != nil {
+		http.Error(w, fmt.Sprintf("%s err: %s", InvalidQueryString, err.Error()), http.StatusNotAcceptable)
 		return
 	}
 	b, _ := json.Marshal(result)

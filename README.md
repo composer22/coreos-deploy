@@ -81,11 +81,14 @@ X-Request-Id: DC8D9C2E-8161-4FC0-937F-4CA7037970D5
 Content-Length: 0
 ```
 
-Two API routes are provided for service measurement:
+Three API routes are provided for service measurement:
 
 * http://localhost:8080/v1.0/health - GET: Is the server alive?
 * http://localhost:8080/v1.0/info - GET: What are the params of the server?
 * http://localhost:8080/v1.0/metrics - GET: What performance and statistics are from the server?
+
+An additional API is provided for displaying a map of machines and units running within the cluster.
+Please see below for more information.
 
 The following is the API Specification for deployment:
 ```
@@ -173,6 +176,131 @@ to avoid collisions:
 Conflicts=major-app*@*.service
 ```
 coreos-deploy.service is included as a reference.
+
+## Cluster Map API
+
+An additional Restful API is available to provide a display of machines and their unit status in
+the cluster.
+
+* http://localhost:8080/v1.0/cluster_map?mq=<machinequerystring>&uq=<unitquerystring>
+
+This call requires a Bearer token.
+
+This returns a json structure of machines and units similar to this:
+```
+{
+  "machines": [{
+    "machine": "230be7181dbb4637b8c50773be97eb63",
+    "ip": "172.21.1.162",
+    "metadata": "role=control",
+    "units": [{
+      "unit": "example-coreos-deploy.service",
+      "hash": "44f1640cfd59e55da0429264e78b4d35b0ff443c",
+      "active": "active",
+      "load": "loaded",
+      "sub": "running"
+    }]
+  }, {
+    "machine": "4b8c11e8ff3c436c80369bdfaec22931",
+    "ip": "172.21.3.120",
+    "metadata": "role=control",
+    "units": [{
+      "unit": "example-coreos-deploy.service",
+      "hash": "44f1640cfd59e55da0429264e78b4d35b0ff443c",
+      "active": "active",
+      "load": "loaded",
+      "sub": "running"
+    }]
+  }, {
+    "machine": "2d86a7a150904750ad9d38d3a80ea663",
+    "ip": "172.21.5.241",
+    "metadata": "role=control",
+    "units": [{
+      "unit": "example-coreos-deploy.service",
+      "hash": "44f1640cfd59e55da0429264e78b4d35b0ff443c",
+      "active": "active",
+      "load": "loaded",
+      "sub": "running"
+    }]
+  }, {
+    "machine": "0d636c8fb07e4d1db151d4cc1acd6f4f",
+    "ip": "172.21.5.242",
+    "metadata": "role=control",
+    "units": [{
+      "unit": "example-coreos-artifactory-monitor@1.service",
+      "hash": "fde5cf3355639457d6fc6d6d4a8ca766d13cc456",
+      "active": "active",
+      "load": "loaded",
+      "sub": "running"
+    }, {
+      "unit": "example-coreos-deploy.service",
+      "hash": "44f1640cfd59e55da0429264e78b4d35b0ff443c",
+      "active": "active",
+      "load": "loaded",
+      "sub": "running"
+    }]
+  }, {
+    "machine": "e7a028794ea3400fb8f46d1856a32e64",
+    "ip": "172.21.1.17",
+    "metadata": "role=worker",
+    "units": []
+  }, {
+    "machine": "070b415018da47c2848e46c34b3870e6",
+    "ip": "172.21.1.18",
+    "metadata": "role=worker",
+    "units": [{
+      "unit": "example-video-mobile-1.0.0-110-dw73yzlw@A1.service",
+      "hash": "f70436553c4a43dc0ebefb4efd21472911a58171",
+      "active": "active",
+      "load": "loaded",
+      "sub": "running"
+    }]
+  }, {
+    "machine": "c50e89a9056a4a29944588e4376df464",
+    "ip": "172.21.1.19",
+    "metadata": "role=worker",
+    "units": []
+  }, {
+    "machine": "9b05056853e342a5abf84c4c15b346dc",
+    "ip": "172.21.3.133",
+    "metadata": "role=worker",
+    "units": []
+  }, {
+    "machine": "44d42fb7a69e441f86dc33957873507d",
+    "ip": "172.21.3.134",
+    "metadata": "role=worker",
+    "units": [{
+      "unit": "example-video-mobile-1.0.0-110-dw73yzlw@A2.service",
+      "hash": "f70436553c4a43dc0ebefb4efd21472911a58171",
+      "active": "active",
+      "load": "loaded",
+      "sub": "running"
+    }]
+  }, {
+    "machine": "5bb0f9ef30a04562af047e55fd0fdcd1",
+    "ip": "172.21.5.155",
+    "metadata": "role=worker",
+    "units": []
+  }, {
+    "machine": "71a80b5560994dbc854349d0efc1fa37",
+    "ip": "172.21.5.156",
+    "metadata": "role=worker",
+    "units": []
+  }, {
+    "machine": "fe55f79b510542498602daec92144ac6",
+    "ip": "172.21.5.157",
+    "metadata": "role=worker",
+    "units": []
+  }]
+}
+```
+Machines are sorted by: metadata asc, ip asc.
+Units within a machine are sorted by: sub asc, unit asc
+
+Two optional regular expression query string filers are allowed as parameters:
+
+* mq - search all fields within machine for this regexp token.
+* uq - search all fields within units of a machine for this regexp token.
 
 ## CLI Client Application
 
