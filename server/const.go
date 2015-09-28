@@ -21,7 +21,7 @@ const (
 	httpRouteV1Metrics    = "/v1.0/metrics"
 	httpRouteV1Deploy     = "/v1.0/deploy"
 	httpRouteV1Status     = "/v1.0/status/"
-	httpRouteV1ClusterMap = "/v1.0/cluster_map/"
+	httpRouteV1ClusterMap = "/v1.0/cluster_map"
 
 	// Connections.
 	TCPReadTimeout  = 10 * time.Second
